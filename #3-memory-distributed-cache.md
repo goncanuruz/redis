@@ -1,9 +1,10 @@
 # Redis – In-Memory Cache & Distributed Cache
+
 ## 1. In-Memory Cache
 
 ### İşlem Sırası
 
-[In-Memory Cache İşlem Sırası]
+**[In-Memory Cache İşlem Sırası]**
 1. `AddMemoryCache` servisini uygulamaya ekleyin.  
 2. `IMemoryCache` referansını **inject** edin.  
 3. `Set` metodu ile veriyi cache’leyin, `Get` metodu ile cache’ten okuyun.  
@@ -22,7 +23,6 @@
 **Birlikte Kullanım (Karma):**  
 Veri en fazla 30 saniye tutulur, ancak her erişimde 5 saniye uzar.  
 5 saniye erişim yapılmazsa veri silinir.
-
 
 ```csharp
 public class ValuesController : ControllerBase
@@ -49,10 +49,11 @@ public class ValuesController : ControllerBase
         return NotFound("Cache boş");
     }
 }
-
-# Distributed Cache (Redis)
+```
 
 ---
+
+## 2. Distributed Cache (Redis)
 
 - **In-Memory Cache**’in aksine, verilerin **uygulamadan bağımsız** bir ortamda saklanması.  
 - Aynı veriye birden fazla **sunucu veya servis** tarafından erişilebilmesi.  
@@ -60,7 +61,7 @@ public class ValuesController : ControllerBase
 
 ---
 
-## İşlem Sırası
+### İşlem Sırası
 
 1. `StackExchange.Redis` kütüphanesini yükleyin.  
 2. `AddStackExchangeRedisCache` servisini uygulamaya ekleyin.  
@@ -71,15 +72,22 @@ public class ValuesController : ControllerBase
 
 ---
 
+### Servis Tanımı
+
 ```csharp
 builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = "localhost:1453");
-Farklı port veya uzak sunucu kullanıyorsan, bağlantı bilgilerini burada güncellemelisin.
-Örneğin:
-options.Configuration = "192.168.1.10:6379";
+```
 
-Controller Örneği
+> Farklı port veya uzak sunucu kullanıyorsan, bağlantı bilgilerini burada güncellemelisin.  
+> Örneğin:  
+> `options.Configuration = "192.168.1.10:6379";`
 
+---
+
+### Controller Örneği
+
+```csharp
 [Route("api/[controller]")]
 public class ValuesController : ControllerBase
 {
@@ -112,27 +120,34 @@ public class ValuesController : ControllerBase
         return Ok(new { name, surname });
     }
 }
+```
 
-** Expiration (Veri Ömrü) Davranışları
+---
 
-Redis üzerinde AbsoluteExpiration ve SlidingExpiration doğrudan uygulanabilir.
+### Expiration (Veri Ömrü) Davranışları
+
+Redis üzerinde **AbsoluteExpiration** ve **SlidingExpiration** doğrudan uygulanabilir.  
 Veri hem mutlak bir ömre, hem de erişime göre uzayan süreye sahip olabilir.
 
+```csharp
 await _distributedCache.SetStringAsync("date", DateTime.Now.ToString(), new()
 {
     AbsoluteExpiration = DateTime.Now.AddSeconds(30),
     SlidingExpiration = TimeSpan.FromSeconds(5)
 });
+```
 
-Özellik	Açıklama
-AbsoluteExpiration	Verinin cache’te kalacağı kesin süre. Süre dolunca otomatik silinir.
-SlidingExpiration	Belirli aralıklarla erişim oldukça süresi uzar, erişim olmazsa silinir.
+| Özellik | Açıklama |
+|----------|-----------|
+| **AbsoluteExpiration** | Verinin cache’te kalacağı kesin süre. Süre dolunca otomatik silinir. |
+| **SlidingExpiration** | Belirli aralıklarla erişim oldukça süresi uzar, erişim olmazsa silinir. |
 
-🔹 30 saniyelik mutlak ömür
-🔹 5 saniyelik sliding süresi
+🔹 30 saniyelik mutlak ömür  
+🔹 5 saniyelik sliding süresi  
 🔹 5 saniye erişim yapılmazsa veri silinir
 
+---
 
-📘 Kaynak:
-Bu notlar, Gençay Yıldız tarafından hazırlanmış aşağıdaki eğitim videosu temel alınarak derlenmiştir:
-🎥 [Redis Eğitimi] (https://www.youtube.com/playlist?list=PLQVXoXFVVtp3_UlZu9qibcUzfm9ve3yVO)
+## 📘 Kaynak
+Bu notlar, **Gençay Yıldız** tarafından hazırlanmış aşağıdaki eğitim videosu temel alınarak derlenmiştir:  
+🎥 [Redis Eğitimi](https://www.youtube.com/playlist?list=PLQVXoXFVVtp3_UlZu9qibcUzfm9ve3yVO)
