@@ -133,7 +133,6 @@ SlidingExpiration	Belirli aralıklarla erişim oldukça süresi uzar, erişim ol
 🔹 5 saniye erişim yapılmazsa veri silinir
 
 
-
 📘 Kaynak:
 Bu notlar, Gençay Yıldız tarafından hazırlanmış aşağıdaki eğitim videosu temel alınarak derlenmiştir:
 🎥 [Redis Eğitimi] (https://www.youtube.com/playlist?list=PLQVXoXFVVtp3_UlZu9qibcUzfm9ve3yVO)
